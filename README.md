@@ -75,12 +75,13 @@ Appointly follows **Domain-Driven Design (DDD)** principles within a Hexagonal A
 ## 📸 Gallery
 
 ### 1. Appointment Booking Flow
-//under constuction
-*(Upload a GIF or screenshot showing the modal form here)*
+<img width="1836" height="834" alt="image" src="https://github.com/user-attachments/assets/9b056b8b-ca44-47d6-aead-eafc462234f0" />
+
 
 ### 2. Interactive Schedule & Dashboard
-//under constuction
-*(Upload a screenshot of the main panel/calendar here)*
+<img width="1869" height="873" alt="image" src="https://github.com/user-attachments/assets/a1ea414f-a825-43c9-8338-dccdd1687a2b" />
+
+
 
 ### 3. Dark Mode & Internationalization
 <img width="1824" height="766" alt="image" src="https://github.com/user-attachments/assets/48159489-7a88-41c4-bba6-8c5321707a97" />
