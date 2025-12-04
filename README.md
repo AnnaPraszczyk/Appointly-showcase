@@ -1,5 +1,6 @@
 # Appointly - SaaS Reservation System
-<img width="1870" height="833" alt="image" src="https://github.com/user-attachments/assets/69620dc0-1c92-40ad-9b6b-65c2db3cb723" />
+<img width="1849" height="782" alt="image" src="https://github.com/user-attachments/assets/9788992f-8014-448d-b1e1-5f7df518d3f2" />
+
 
 ## 🚀 About The Project
 
@@ -81,16 +82,19 @@ Detailed documentation of key architectural choices and trade-offs:
 ## 📸 Gallery
 
 ### 1. Appointment Booking Flow
-<img width="1836" height="834" alt="image" src="https://github.com/user-attachments/assets/9b056b8b-ca44-47d6-aead-eafc462234f0" />
+<img width="1850" height="821" alt="image" src="https://github.com/user-attachments/assets/63fe91af-66ba-4953-a8a2-f2ccdeaa16af" />
+
 
 
 ### 2. Interactive Schedule & Dashboard
-<img width="1869" height="873" alt="image" src="https://github.com/user-attachments/assets/a1ea414f-a825-43c9-8338-dccdd1687a2b" />
+<img width="1871" height="734" alt="image" src="https://github.com/user-attachments/assets/b9f43ed2-4244-486c-b1d9-7bbe0b0c1be6" />
+
 
 
 
 ### 3. Dark Mode & Internationalization
-<img width="1824" height="766" alt="image" src="https://github.com/user-attachments/assets/48159489-7a88-41c4-bba6-8c5321707a97" />
+<img width="1833" height="801" alt="image" src="https://github.com/user-attachments/assets/4532e12f-2c5f-4612-a601-6c7fbe09e831" />
+
 
 
 ---
