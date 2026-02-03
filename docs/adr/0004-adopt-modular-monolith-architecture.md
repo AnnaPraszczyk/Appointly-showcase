@@ -11,7 +11,7 @@ The initial architecture placed core domain concepts (`User`, `Reservation`, `Co
 * Adding new features (like Payments) risked destabilizing the core Reservation logic.
 * Querying availability was becoming inefficient due to complex joins in the transactional model.
 
-We need an architecture that supports complex business logic, separates distinct business domains, and prepares the system for potential future scaling (microservices) without the immediate operational overhead of distributed systems.
+I need an architecture that supports complex business logic, separates distinct business domains, and prepares the system for potential future scaling (microservices) without the immediate operational overhead of distributed systems.
 
 ## Decision Drivers
 * **Separation of Concerns:** Distinct business areas (Identity vs. Scheduling) have different lifecycles and change rates.
@@ -20,14 +20,14 @@ We need an architecture that supports complex business logic, separates distinct
 * **Simplicity:** Avoiding the complexity of distributed transactions and network latency inherent in microservices at this stage.
 
 ## Considered Options
-* **Classic Monolith:** Shared database, spaghetti code (Rejected due to maintainability issues).
+* **Classic Monolith:** Shared database, code (Rejected due to maintainability issues).
 * **Microservices:** Physical separation of services (Rejected due to "Microservice Premium" - high DevOps complexity for a single developer).
 * **Modular Monolith:** Logical separation within a single deployment unit (Chosen).
 
 ## Decision Outcome
 Chosen option: **Modular Monolith with DDD and CQRS**.
 
-We will restructure the backend into four distinct, loosely coupled modules based on **Bounded Contexts**:
+I will restructure the backend into four distinct, loosely coupled modules based on **Bounded Contexts**:
 
 1.  **Identity Context:** Handles Authentication and Authorization (JWT). The `User` entity here is strictly for security (`AuthUser`).
 2.  **Availability Context:** Handles Companies, Employees, and Resources. Owns the "Truth" about schedules.
