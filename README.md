@@ -48,6 +48,7 @@ Detailed documentation of key architectural choices and trade-offs:
 * [ADR-0001: Use Hexagonal Architecture (Ports & Adapters)](docs/adr/0001-use-hexagonal-architecture.md)
 * [ADR-0002: React + Vite + TailwindCSS for Frontend](docs/adr/0002-use-react-vite-frontend.md)
 * [ADR-0003: Strict Data Integrity & Validation Strategy](docs/adr/0003-data-integrity-and-validation-strategy.md)
+* [ADR-0004: Adopt Modular Monolith Architecture (DDD & CQRS)](docs/adr/0004-adopt-modular-monolith-architecture.md)
 
 
 
