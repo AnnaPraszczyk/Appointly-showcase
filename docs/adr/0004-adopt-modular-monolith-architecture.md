@@ -47,35 +47,30 @@ I will restructure the backend into four distinct, loosely coupled modules based
 ## Visualisation (C4 Model)
 
 ```mermaid
-C4Context
-      title Modular Monolith Architecture (Appointly)
+C4Component
+    title Modular Monolith Architecture (Appointly)
 
-      %% Konfiguracja układu
-      UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
-
-      Container_Boundary(backend, "Appointly Backend (Spring Boot)") {
+    Container_Boundary(backend, "Appointly Backend (Spring Boot)") {
         
-        Component(identity, "Identity", "Auth / Security", "User handling (AuthUser)\nExposes: IdentityFacade")
-        
-        Component(avail, "Availability", "Resource Mgmt", "Schedules & Slots\nExposes: AvailabilityFacade")
-        
-        Component(booking, "Booking", "Core Domain", "Reservations & Logic\nUses: Facades")
-        
-        Component(payment, "Payment", "Integration", "External Payments\nPublishes: Events")
-      }
+        Component(identity, "Identity Module", "Security", "Exposes: IdentityFacade")
+        Component(avail, "Availability Module", "CQRS", "Exposes: AvailabilityFacade")
+        Component(booking, "Booking Module", "Core Domain", "Uses: Facades")
+        Component(payment, "Payment Module", "Event-Driven", "Publishes: Events")
+    }
 
-      %% Baza na samym dole
-      ContainerDb(db, "PostgreSQL Database", "Relational DB", "Schemas: identity, availability, booking, payment")
+    %% Baza danych zdefiniowana poza boundary, na samym końcu
+    ContainerDb(db, "PostgreSQL Database", "Relational DB", "Logically separated schemas")
 
-      %% Relacje Między Modułami (Poziome)
-      Rel_R(booking, avail, "1. Check availability", "Facade (Sync)")
-      Rel_L(booking, identity, "2. Validate user", "Facade (Sync)")
-      
-      %% Relacje Asynchroniczne (Przerywana linia)
-      Rel_U(payment, booking, "3. Payment Completed", "Event (Async)")
+    %% Relacje Między Modułami
+    %% Booking pośrodku korzysta z innych
+    Rel(booking, avail, "Checks availability", "Facade")
+    Rel(booking, identity, "Validates user", "Facade")
+    
+    %% Event idzie "wstecz" lub "do góry" logicznie, ale Mermaid ułoży to obok siebie
+    Rel(payment, booking, "Payment Completed", "Event (Async)")
 
-      %% Relacje do Bazy Danych (W dół)
-      Rel_D(identity, db, "Read/Write", "JPA")
-      Rel_D(avail, db, "Read/Write", "JPA/JDBC")
-      Rel_D(booking, db, "Read/Write", "JPA")
-      Rel_D(payment, db, "Read/Write", "JPA")
+    %% Wszystkie moduły korzystają z bazy - to ściągnie bazę na dół diagramu
+    Rel(identity, db, "R/W", "JPA")
+    Rel(avail, db, "R/W", "JPA")
+    Rel(booking, db, "R/W", "JPA")
+    Rel(payment, db, "R/W", "JPA")
