@@ -47,31 +47,36 @@ I will restructure the backend into four distinct, loosely coupled modules based
 ## Visualisation (C4 Model)
 
 ```mermaid
-C4Context
-      title Modular Monolith Decomposition (Detailed)
+C4Component
+    title Modular Monolith Structure (Appointly)
 
-      Container_Boundary(backend, "Appointly Backend (Spring Boot)") {
-        
-        Component(identity, "Identity Module", "Security / JWT", "Aggregates: AuthUser, Role\nExposes: IdentityFacade")
-        
-        Component(avail, "Availability Module", "CQRS / Read Model", "Aggregates: Resource, Schedule\nExposes: AvailabilityFacade")
-        
-        Component(booking, "Booking Module", "Core Domain", "Aggregates: Reservation\nDomain Services: PricingService")
-        
-        Component(payment, "Payment Module", "Event-Driven / Outbox", "Aggregates: Transaction\nExposes: PaymentFacade")
-      }
+    %% Wymuszenie szerszego rozstawienia elementów dla czytelności
+    UpdateLayoutConfig($c4ShapeInRow="4", $c4BoundaryInRow="1")
 
-      ContainerDb(db, "Database", "PostgreSQL", "Schemas: identity, availability, booking, payment")
+    Container_Boundary(backend, "Appointly Backend (Spring Boot)") {
+        
+        Component(identity, "Identity", "Security Context", "AuthUser, Roles\nExposes: IdentityFacade")
+        
+        Component(booking, "Booking", "Core Domain", "Reservations, Logic\nUses: Facades")
+        
+        Component(avail, "Availability", "Subdomain", "Schedules, Resources\nExposes: AvailabilityFacade")
+        
+        Component(payment, "Payment", "Integration", "Transactions\nPublishes: Events")
+    }
 
-      %% Relacje wewnętrzne (Java Method Calls)
-      Rel(booking, avail, "1. Checks slots availability", "AvailabilityFacade (Sync)")
-      Rel(booking, identity, "2. Validates user", "IdentityFacade (Sync)")
-      
-      %% Relacje zdarzeniowe (Event Bus)
-      Rel(payment, booking, "3. Publishes: PaymentCompleted", "Spring Event (Async)")
-      
-      %% Baza danych
-      Rel(identity, db, "R/W identity schema", "JPA")
-      Rel(avail, db, "R/W availability schema", "JPA/JDBC")
-      Rel(booking, db, "R/W booking schema", "JPA")
-      Rel(payment, db, "R/W payment schema", "JPA")
+    ContainerDb(db, "PostgreSQL", "Shared Instance", "Schemas: identity, booking, availability, payment")
+
+    %% --- LOGIKA BIZNESOWA (Ponumerowana dla jasności) ---
+    
+    %% Booking to serce, więc od niego wychodzą strzałki
+    Rel(booking, identity, "1. Validate User", "Facade (Sync)")
+    Rel(booking, avail, "2. Check Slots", "Facade (Sync)")
+    
+    %% Event zwrotny
+    Rel(payment, booking, "3. On Payment Completed", "Async Event")
+
+    %% --- WARSTWA DANYCH ---
+    Rel(identity, db, "JPA", "Read/Write")
+    Rel(booking, db, "JPA", "Read/Write")
+    Rel(avail, db, "JPA", "Read/Write")
+    Rel(payment, db, "JPA", "Read/Write")
