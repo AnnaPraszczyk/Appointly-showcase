@@ -48,14 +48,30 @@ I will restructure the backend into four distinct, loosely coupled modules based
 
 ```mermaid
 C4Context
-      title Modular Monolith Decomposition
+      title Modular Monolith Decomposition (Detailed)
 
-      Container_Boundary(backend, "Appointly Backend") {
-        Component(identity, "Identity", "Generic Subdomain", "Auth & Security")
-        Component(avail, "Availability", "Core Domain", "Schedules & Resources")
-        Component(booking, "Booking", "Core Domain", "Reservations Logic")
-        Component(payment, "Payment", "Supporting Subdomain", "Gateway Integration")
+      Container_Boundary(backend, "Appointly Backend (Spring Boot)") {
+        
+        Component(identity, "Identity Module", "Security / JWT", "Aggregates: AuthUser, Role\nExposes: IdentityFacade")
+        
+        Component(avail, "Availability Module", "CQRS / Read Model", "Aggregates: Resource, Schedule\nExposes: AvailabilityFacade")
+        
+        Component(booking, "Booking Module", "Core Domain", "Aggregates: Reservation\nDomain Services: PricingService")
+        
+        Component(payment, "Payment Module", "Event-Driven / Outbox", "Aggregates: Transaction\nExposes: PaymentFacade")
       }
 
-      Rel(booking, avail, "Uses Facade", "Sync")
-      Rel(payment, booking, "Publishes Event", "Async")
+      ContainerDb(db, "Database", "PostgreSQL", "Schemas: identity, availability, booking, payment")
+
+      %% Relacje wewnętrzne (Java Method Calls)
+      Rel(booking, avail, "1. Checks slots availability", "AvailabilityFacade (Sync)")
+      Rel(booking, identity, "2. Validates user", "IdentityFacade (Sync)")
+      
+      %% Relacje zdarzeniowe (Event Bus)
+      Rel(payment, booking, "3. Publishes: PaymentCompleted", "Spring Event (Async)")
+      
+      %% Baza danych
+      Rel(identity, db, "R/W identity schema", "JPA")
+      Rel(avail, db, "R/W availability schema", "JPA/JDBC")
+      Rel(booking, db, "R/W booking schema", "JPA")
+      Rel(payment, db, "R/W payment schema", "JPA")
