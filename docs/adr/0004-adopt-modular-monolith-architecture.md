@@ -47,36 +47,35 @@ I will restructure the backend into four distinct, loosely coupled modules based
 ## Visualisation (C4 Model)
 
 ```mermaid
-C4Component
-    title Modular Monolith Structure (Appointly)
+C4Context
+      title Modular Monolith Architecture (Appointly)
 
-    %% Wymuszenie szerszego rozstawienia elementów dla czytelności
-    UpdateLayoutConfig($c4ShapeInRow="4", $c4BoundaryInRow="1")
+      %% Konfiguracja układu
+      UpdateLayoutConfig($c4ShapeInRow="3", $c4BoundaryInRow="1")
 
-    Container_Boundary(backend, "Appointly Backend (Spring Boot)") {
+      Container_Boundary(backend, "Appointly Backend (Spring Boot)") {
         
-        Component(identity, "Identity", "Security Context", "AuthUser, Roles\nExposes: IdentityFacade")
+        Component(identity, "Identity", "Auth / Security", "User handling (AuthUser)\nExposes: IdentityFacade")
         
-        Component(booking, "Booking", "Core Domain", "Reservations, Logic\nUses: Facades")
+        Component(avail, "Availability", "Resource Mgmt", "Schedules & Slots\nExposes: AvailabilityFacade")
         
-        Component(avail, "Availability", "Subdomain", "Schedules, Resources\nExposes: AvailabilityFacade")
+        Component(booking, "Booking", "Core Domain", "Reservations & Logic\nUses: Facades")
         
-        Component(payment, "Payment", "Integration", "Transactions\nPublishes: Events")
-    }
+        Component(payment, "Payment", "Integration", "External Payments\nPublishes: Events")
+      }
 
-    ContainerDb(db, "PostgreSQL", "Shared Instance", "Schemas: identity, booking, availability, payment")
+      %% Baza na samym dole
+      ContainerDb(db, "PostgreSQL Database", "Relational DB", "Schemas: identity, availability, booking, payment")
 
-    %% --- LOGIKA BIZNESOWA (Ponumerowana dla jasności) ---
-    
-    %% Booking to serce, więc od niego wychodzą strzałki
-    Rel(booking, identity, "1. Validate User", "Facade (Sync)")
-    Rel(booking, avail, "2. Check Slots", "Facade (Sync)")
-    
-    %% Event zwrotny
-    Rel(payment, booking, "3. On Payment Completed", "Async Event")
+      %% Relacje Między Modułami (Poziome)
+      Rel_R(booking, avail, "1. Check availability", "Facade (Sync)")
+      Rel_L(booking, identity, "2. Validate user", "Facade (Sync)")
+      
+      %% Relacje Asynchroniczne (Przerywana linia)
+      Rel_U(payment, booking, "3. Payment Completed", "Event (Async)")
 
-    %% --- WARSTWA DANYCH ---
-    Rel(identity, db, "JPA", "Read/Write")
-    Rel(booking, db, "JPA", "Read/Write")
-    Rel(avail, db, "JPA", "Read/Write")
-    Rel(payment, db, "JPA", "Read/Write")
+      %% Relacje do Bazy Danych (W dół)
+      Rel_D(identity, db, "Read/Write", "JPA")
+      Rel_D(avail, db, "Read/Write", "JPA/JDBC")
+      Rel_D(booking, db, "Read/Write", "JPA")
+      Rel_D(payment, db, "Read/Write", "JPA")
